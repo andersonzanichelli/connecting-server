@@ -39,7 +39,7 @@ connecting.linkedin = function(res){
        "grant_type": "authorization_code",
        "code": "CoNNecTinGDCEeFWf45A53sdfKef424",
        "redirect_uri": "https://connecting-server.herokuapp.com/auth/linkedin/callback",
-       "client_id": "78mqsj45fsrio3",
+       /*"client_id": "78mqsj45fsrio3",*/
        "client_secret": "IZCT1PDjjXqmpmmM"
     };
 
