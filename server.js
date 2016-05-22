@@ -37,9 +37,9 @@ connecting.linkedin = function(res){
     var url = 'https://www.linkedin.com/uas/oauth2/accessToken'
     var data = {
        "grant_type": "authorization_code",
-       "code": params.state,
-       "redirect_uri": params.redirect_uri,
-       "client_id": params.client_id,
+       "code": "CoNNecTinGDCEeFWf45A53sdfKef424",
+       "redirect_uri": "https://connecting-server.herokuapp.com/auth/linkedin/callback",
+       "client_id": "78mqsj45fsrio3",
        "client_secret": "IZCT1PDjjXqmpmmM"
     };
 
