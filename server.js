@@ -12,7 +12,7 @@ var connecting = {};
 connecting.linkedin = function(res){
     var params = {
         "response_type": "code",
-        "client_id": "78mqsj45fsrio3"
+        "client_id": "78mqsj45fsrio3",
         "redirect_uri": "https://connecting-server.herokuapp.com/auth/linkedin/callback",
         "state": "CoNNecTinGDCEeFWf45A53sdfKef424",
         "scope": "r_basicprofile",
@@ -65,8 +65,6 @@ server.use(function(req, res, next) {
     next();
 });
 
-server.get('/author/:collection', connecting.prepareFind);
-server.get('/author/:collection/:filter', connecting.prepareFind);
 server.post('/auth/linkedin/callback', connecting.linkedin)
 server.get('/auth/linkedin', connecting.login)
 
