@@ -3,7 +3,6 @@ var mongodb = require('mongodb');
 var request = require('request');
 
 var server = restify.createServer();
-var uri = 'mongodb://bookstore-dba:bookstore-dba@ds019482.mlab.com:19482/bookstore'
 var port = process.env.PORT || 9000;
 
 server.use(restify.bodyParser({ mapParams: true }));
@@ -11,119 +10,53 @@ server.use(restify.bodyParser({ mapParams: true }));
 var connecting = {};
 
 connecting.linkedin = function(res){
-    request.get('https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=78mqsj45fsrio3&redirect_uri=https://connecting-server.herokuapp.com/auth/linkedin/callback&state=CoNNecTinGDCEeFWf45A53sdfKef424&scope=r_basicprofile')
+    var params = {
+        "response_type": "code",
+        "client_id": "78mqsj45fsrio3"
+        "redirect_uri": "https://connecting-server.herokuapp.com/auth/linkedin/callback",
+        "state": "CoNNecTinGDCEeFWf45A53sdfKef424",
+        "scope": "r_basicprofile",
+
+    };
+
+    var stage1 = {};
+
+    request.get('https://www.linkedin.com/uas/oauth2/authorization'+
+                '?response_type='+params.response_type+
+                '&client_id='+params.client_id+
+                '&redirect_uri='+params.redirect_uri+
+                '&state='+params.state+
+                '&scope='+params.scope)
         .on('response', function(response) {
-            res.json(response);
+            stage1 = response;
         })
         .on('error', function(error){
             res.json(error);
         })
+
+    var url = 'https://www.linkedin.com/uas/oauth2/accessToken'
+    var data = {
+       "grant_type": "authorization_code",
+       "code": params.state,
+       "redirect_uri": params.redirect_uri,
+       "client_id": params.client_id,
+       "client_secret": "IZCT1PDjjXqmpmmM"
+    };
+
+    var callback = function(err, httpResponse, body){
+        if (error)
+            res.json(error);
+
+        res.json(body);
+    };
+
+    request.post({url:url, formData: data}, callback);
 };
 
 connecting.login = function(req, res, next) {
     connecting.linkedin(res);
     next();
 }
-
-connecting.prepareFind = function(req, res, next){
-
-    var attrs = {};
-
-    if(req.params['collection'])
-        attrs['collection'] = req.params['collection'];
-
-    if(req.params['filter'])
-        attrs['filter'] = req.params['filter'];
-
-    var params = {
-        "operation": connecting.find,
-        "collection": attrs['collection'],
-        "filter": attrs['filter'],
-        "response": res,
-        "callback": undefined
-    };
-
-    connecting.dbOperations(params);
-    next();
-};
-
-connecting.prepareSave = function(req, res, next){
-    var params = {
-        "operation": connecting.save,
-        "collection": req.body.collection,
-        "object": req.body.object,
-        //"filter": req.body.filter,
-        "response": res,
-        "callback": undefined
-    };
-
-    connecting.dbOperations(params);
-    next();
-};
-
-connecting.prepareUpdate = function(req, res, next){
-    var params = {
-        "operation": connecting.update,
-        "collection": req.body.collection,
-        "object": req.body.object,
-        "filter": req.body.filter,
-        "response": res,
-        "callback": undefined
-    };
-    
-    connecting.dbOperations(params);
-    next();
-};
-
-connecting.find = function(params) {
-    var collection = params.db.collection(params.collection);
-
-    collection.find(params.filter).toArray(function(err, docs) {
-        if(err) {
-            params.response.json(err);
-            return;
-        }
-
-        if(params.callback){
-            params.docs = docs;
-            params.callback(params);
-        } else {
-            params.response.json(docs);
-        }
-    });
-};
-
-connecting.save = function(params){
-
-    var collection = params.db.collection(params.collection);
-
-    try {
-        collection.insert(params.object);
-        params.response.json({"insert": true});
-    } catch(ex) {
-        params.response.json({"insert": false});
-    }
-};
-
-connecting.update = function(params) {
-    var collection = params.db.collection(params.collection);
-
-    try {
-        collection.update(params.filter, { $push: { url: params.config.url }});
-        params.response.json({"success": true});
-    } catch(ex) {
-        params.response.json({"success": false, "err": "Error on trying to save the link."});
-    }
-};
-
-connecting.dbOperations = function(params) {
-    mongodb.MongoClient.connect(uri, function(err, db) {
-        if(err) throw err;
-
-        params.db = db;
-        params.operation(params);
-    });
-};
 
 server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
