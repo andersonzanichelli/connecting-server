@@ -13,23 +13,26 @@ var connecting = {};
 server.get('/author/:collection', connecting.prepareFind);
 server.get('/author/:collection/:filter', connecting.prepareFind);
 server.post('/auth/linkedin/callback', connecting.linkedin)
+server.get('/auth/linkedin', connecting.login)
 
 server.listen(port, function() {
   console.log('%s listening at server port %s', 'connecting', port);
 });
 
-connecting.linkedin = function(req, res, next){
-    var params = {
-        "operation": connecting.save,
-        "collection": "linkedin",
-        "object": req,
-        "response": res,
-        "callback": undefined
-    };
-
-    connecting.dbOperations(params);
-    next();
+connecting.linkedin = function(res){
+    request.get('https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=78mqsj45fsrio3&redirect_uri=https://connecting-server.herokuapp.com/auth/linkedin/callback&state=CoNNecTinGDCEeFWf45A53sdfKef424&scope=r_basicprofile')
+        .on('response', function(response) {
+            res.json(response);
+        })
+        .on('error', function(error){
+            res.json(error);
+        })
 };
+
+connecting.login = function(req, res, next) {
+    connecting.linkedin(res);
+    next();
+}
 
 connecting.prepareFind = function(req, res, next){
 
