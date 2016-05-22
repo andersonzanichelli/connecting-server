@@ -15,19 +15,26 @@ connecting.linkedin = function(res){
     request.get('https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=78mqsj45fsrio3&redirect_uri=https://connecting-server.herokuapp.com/auth/linkedin/callback&state=CoNNecTinGDCEeFWf45A53sdfKef424&scope=r_basicprofile')
         .on('response', function(response) {
             res.json(response);
-       //     stage1 = response;
+            stage1 = response;
         })
         .on('error', function(error){
             res.json(error);
         })
-return;
-    var url = 'https://www.linkedin.com/uas/oauth2/accessToken'
+
     var data = {
        "grant_type": "authorization_code",
        "code": "CoNNecTinGDCEeFWf45A53sdfKef424",
        "redirect_uri": "https://connecting-server.herokuapp.com/auth/linkedin/callback",
        "client_id": "78mqsj45fsrio3",
        "client_secret": "IZCT1PDjjXqmpmmM"
+    };
+
+    var options = {
+        url: 'https://www.linkedin.com/uas/oauth2/accessToken',
+        formData: data,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     };
 
     var callback = function(err, httpResponse, body){
@@ -37,7 +44,7 @@ return;
         res.json(body);
     };
 
-    request.post({url:url, formData: data}, callback);
+    request.post(options, callback);
 };
 
 connecting.login = function(req, res, next) {
