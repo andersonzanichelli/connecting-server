@@ -3,12 +3,33 @@ var mongodb = require('mongodb');
 var request = require('request');
 
 var server = restify.createServer();
-var uri = 'mongodb://connecting-dba:connecting-dba@ds019482.mlab.com:19482/connecting'
+var uri = 'mongodb://bookstore-dba:bookstore-dba@ds019482.mlab.com:19482/bookstore'
 var port = process.env.PORT || 9000;
 
 server.use(restify.bodyParser({ mapParams: true }));
 
 var connecting = {};
+
+server.get('/author/:collection', connecting.prepareFind);
+server.get('/author/:collection/:filter', connecting.prepareFind);
+server.post('/auth/linkedin/callback', connecting.linkedin)
+
+server.listen(port, function() {
+  console.log('%s listening at server port %s', 'connecting', port);
+});
+
+connecting.linkedin = function(req, res, next){
+    var params = {
+        "operation": connecting.save,
+        "collection": "linkedin",
+        "object": req,
+        "response": res,
+        "callback": undefined
+    };
+
+    connecting.dbOperations(params);
+    next();
+};
 
 connecting.prepareFind = function(req, res, next){
 
@@ -110,16 +131,8 @@ connecting.dbOperations = function(params) {
     });
 };
 
-
 server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-});
-
-server.get('/author/:collection', connecting.prepareFind);
-server.get('/author/:collection/:filter', connecting.prepareFind);
-
-server.listen(port, function() {
-  console.log('%s listening at server port %s', 'connecting', port);
 });
