@@ -44,8 +44,8 @@ connecting.linkedin = function(res){
     };
 
     var callback = function(err, httpResponse, body){
-        if (error)
-            res.json(error);
+        if (err)
+            res.json(err);
 
         res.json(body);
     };
