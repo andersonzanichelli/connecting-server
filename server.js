@@ -10,15 +10,6 @@ server.use(restify.bodyParser({ mapParams: true }));
 
 var connecting = {};
 
-server.get('/author/:collection', connecting.prepareFind);
-server.get('/author/:collection/:filter', connecting.prepareFind);
-server.post('/auth/linkedin/callback', connecting.linkedin)
-server.get('/auth/linkedin', connecting.login)
-
-server.listen(port, function() {
-  console.log('%s listening at server port %s', 'connecting', port);
-});
-
 connecting.linkedin = function(res){
     request.get('https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=78mqsj45fsrio3&redirect_uri=https://connecting-server.herokuapp.com/auth/linkedin/callback&state=CoNNecTinGDCEeFWf45A53sdfKef424&scope=r_basicprofile')
         .on('response', function(response) {
@@ -139,4 +130,13 @@ server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "*");
     res.header("Access-Control-Allow-Methods", "*");
     next();
+});
+
+server.get('/author/:collection', connecting.prepareFind);
+server.get('/author/:collection/:filter', connecting.prepareFind);
+server.post('/auth/linkedin/callback', connecting.linkedin)
+server.get('/auth/linkedin', connecting.login)
+
+server.listen(port, function() {
+  console.log('%s listening at server port %s', 'connecting', port);
 });
