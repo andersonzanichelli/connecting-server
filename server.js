@@ -10,23 +10,9 @@ server.use(restify.bodyParser({ mapParams: true }));
 var connecting = {};
 
 connecting.linkedin = function(res){
-    var params = {
-        "response_type": "code",
-        "client_id": "78mqsj45fsrio3",
-        "redirect_uri": "https://connecting-server.herokuapp.com/auth/linkedin/callback",
-        "state": "CoNNecTinGDCEeFWf45A53sdfKef424",
-        "scope": "r_basicprofile",
-
-    };
-
     var stage1 = {};
 
-    request.get('https://www.linkedin.com/uas/oauth2/authorization'+
-                '?response_type='+params.response_type+
-                '&client_id='+params.client_id+
-                '&redirect_uri='+params.redirect_uri+
-                '&state='+params.state+
-                '&scope='+params.scope)
+    request.get('https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=78mqsj45fsrio3&redirect_uri=https://connecting-server.herokuapp.com/auth/linkedin/callback&state=CoNNecTinGDCEeFWf45A53sdfKef424&scope=r_basicprofile')
         .on('response', function(response) {
             stage1 = response;
         })
