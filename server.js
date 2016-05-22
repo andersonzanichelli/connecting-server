@@ -15,12 +15,12 @@ connecting.linkedin = function(res){
     request.get('https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=78mqsj45fsrio3&redirect_uri=https://connecting-server.herokuapp.com/auth/linkedin/callback&state=CoNNecTinGDCEeFWf45A53sdfKef424&scope=r_basicprofile')
         .on('response', function(response) {
             res.json(response);
-            stage1 = response;
+       //     stage1 = response;
         })
         .on('error', function(error){
             res.json(error);
         })
-
+return;
     var url = 'https://www.linkedin.com/uas/oauth2/accessToken'
     var data = {
        "grant_type": "authorization_code",
