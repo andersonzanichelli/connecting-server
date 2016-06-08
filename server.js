@@ -20,7 +20,7 @@ connecting.linkedin = function(res){
             res.end(response);
         })
         .on('error', function(error){
-            res.end(error);
+            res.end("Batata");
         })
 
     var data = {
@@ -46,7 +46,7 @@ connecting.linkedin = function(res){
         res.json(body);
     };
 
-    request.post(options, callback);
+    // request.post(options, callback);
 };
 
 connecting.login = function(req, res, next) {
