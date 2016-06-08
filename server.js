@@ -59,6 +59,7 @@ server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "*");
     res.header("Access-Control-Allow-Methods", "*");
+    res.header("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
     next();
 });
 
