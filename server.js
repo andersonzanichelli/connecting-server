@@ -21,7 +21,7 @@ connecting.linkedin = function(res){
             res.end();
         })
         .on('error', function(error){
-            res.end("Batata");
+            res.end("eta le le");
         })
 
     var data = {
