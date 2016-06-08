@@ -17,7 +17,8 @@ connecting.linkedin = function(res){
             //res.json(response);
             //stage1 = response;
             res.writeHead(200, {"Content-Type": "text/plain"});
-            res.end(response);
+            res.write(response);
+            res.end();
         })
         .on('error', function(error){
             res.end("Batata");
